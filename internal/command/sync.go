@@ -14,7 +14,7 @@ type SyncCommand struct {
 
 func (command *SyncCommand) Execute(cmd *cobra.Command, args []string) {
 	envolvePath := logic.GetEnvolveHomePath()
-	currentPath, currentFolderName := logic.GetCurrentPathAndFolder()
+	currentPath, currentFolderName := logic.GetCurrentPathAndFolder("")
 	targetPath := filepath.Join(envolvePath, currentFolderName)
 	currentEnvFilePath := filepath.Join(currentPath, "/.env")
 	targetEnvFilePath := filepath.Join(targetPath, "/.env")

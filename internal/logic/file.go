@@ -48,8 +48,16 @@ func ReadDir(path string, excludeNames []string) ([]os.FileInfo, error) {
 	return filteredFiles, nil
 }
 
-func GetCurrentPathAndFolder() (string, string) {
-	path, _ := os.Getwd()
+func GetCurrentPathAndFolder(optionalPath string) (string, string) {
+
+	var path string
+
+	if optionalPath == "" {
+		path, _ = os.Getwd()
+	} else {
+		path = optionalPath
+	}
+
 	folder := filepath.Base(path)
 	return path, folder
 }

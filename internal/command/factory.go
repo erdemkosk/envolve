@@ -11,6 +11,9 @@ func CommandFactory(commandType config.CommandType) ICommand {
 	if commandType == config.SHOW {
 		return &ShowCommand{}
 	}
+	if commandType == config.SYNCALL {
+		return &SyncAllCommand{}
+	}
 
 	return nil
 }

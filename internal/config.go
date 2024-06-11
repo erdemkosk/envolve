@@ -10,8 +10,9 @@ var EXCLUDED_FILES = []string{".DS_Store"}
 type CommandType int32
 
 const (
-	SYNC CommandType = 0
-	SHOW CommandType = 1
+	SYNC    CommandType = 0
+	SYNCALL CommandType = 1
+	SHOW    CommandType = 2
 )
 
 // colors

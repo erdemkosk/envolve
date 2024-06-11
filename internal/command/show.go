@@ -37,7 +37,7 @@ func (command ShowCommand) Execute(cmd *cobra.Command, args []string) {
 
 	help1 := tview.NewTextView().
 		SetDynamicColors(true).
-		SetText(`[green]Info(U can use mouse) [yellow]ctrl+N[white]:Move Editor [yellow]ctrl+B[white]:Move Envs [yellow]ctrl+S[white]:Save Changes `)
+		SetText(`[green]Info(U can use mouse) [yellow]ctrl+N[white]:Move Editor [yellow]ctrl+B[white]:Move Envs [yellow]ctrl+S[white]:Save Changes [red]ctrl+Q[white]:Exit `)
 
 	addNodes := func(target *tview.TreeNode, path string) {
 		files, err := logic.ReadDir(path, config.EXCLUDED_FILES)
