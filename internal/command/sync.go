@@ -1,7 +1,7 @@
 package command
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -19,12 +19,17 @@ func (command *SyncCommand) Execute(cmd *cobra.Command, args []string) {
 	currentEnvFilePath := filepath.Join(currentPath, "/.env")
 	targetEnvFilePath := filepath.Join(targetPath, "/.env")
 
+	if _, err := os.Stat(currentEnvFilePath); err == nil {
+		log.Println("Error: .env file already exists in the current directory!")
+		return
+	}
+
 	logic.CreateFolderIfDoesNotExist(targetPath)
 	logic.CopyFile(currentEnvFilePath, targetEnvFilePath)
 	logic.DeleteFile(currentEnvFilePath)
 	logic.Symlink(targetEnvFilePath, currentEnvFilePath)
 
-	fmt.Println("Sync work with success!")
+	log.Println("Sync work with success!")
 
 	os.Exit(0)
 }

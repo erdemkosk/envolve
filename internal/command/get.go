@@ -16,7 +16,7 @@ import (
 type GetCommand struct {
 }
 
-func (command *GetCommand) Execute(cmd *cobra.Command, args []string) {
+func (command GetCommand) Execute(cmd *cobra.Command, args []string) {
 	var mu sync.Mutex
 
 	envolvePath := logic.GetEnvolveHomePath()
@@ -74,9 +74,11 @@ func (command *GetCommand) Execute(cmd *cobra.Command, args []string) {
 
 				cmd := handler.OpenWithEditorCommand(selectedPath)
 
-				app.Stop()
+				app.Sync().Stop()
 
 				handler.Exec(cmd)
+
+				app.Stop()
 			}
 		}
 	})

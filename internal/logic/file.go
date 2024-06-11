@@ -1,9 +1,9 @@
 package logic
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -63,11 +63,11 @@ func CreateFolderIfDoesNotExist(homePath string) {
 	if os.IsNotExist(err) {
 		err := os.MkdirAll(homePath, 0755)
 		if err != nil {
-			fmt.Println("Create folder problem:", err)
+			log.Println("Create folder problem:", err)
 			return
 		}
 	} else if err != nil {
-		fmt.Println("Error checking directory:", err)
+		log.Println("Error checking directory:", err)
 		return
 	}
 }
@@ -76,7 +76,7 @@ func Symlink(source string, target string) {
 	err := os.Symlink(source, target)
 
 	if err != nil {
-		fmt.Println("There is a problem with symlink:", err)
+		log.Println("There is a problem with symlink:", err)
 		return
 	}
 }
@@ -84,27 +84,27 @@ func Symlink(source string, target string) {
 func CopyFile(sourceFilePath string, targetFilePath string) {
 	sourceFile, err := os.Open(sourceFilePath)
 	if err != nil {
-		fmt.Println("Source file problem", err)
+		log.Println("Source file problem", err)
 		return
 	}
 	defer sourceFile.Close()
 
 	targetFile, err := os.Create(targetFilePath)
 	if err != nil {
-		fmt.Println("Target file problem", err)
+		log.Println("Target file problem", err)
 		return
 	}
 	defer targetFile.Close()
 
 	_, err = sourceFile.Seek(0, 0)
 	if err != nil {
-		fmt.Println("Seek error", err)
+		log.Println("Seek error", err)
 		return
 	}
 
 	_, err = io.Copy(targetFile, sourceFile)
 	if err != nil {
-		fmt.Println("File cannot copied:", err)
+		log.Println("File cannot copied:", err)
 		return
 	}
 }
@@ -112,7 +112,7 @@ func CopyFile(sourceFilePath string, targetFilePath string) {
 func DeleteFile(filePath string) {
 	err := os.Remove(filePath)
 	if err != nil {
-		fmt.Println("Remove problem", err)
+		log.Println("Remove problem", err)
 		return
 	}
 
