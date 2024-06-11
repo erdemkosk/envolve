@@ -60,14 +60,15 @@ func GetFoldername(path string) string {
 
 func CreateFolderIfDoesNotExist(homePath string) {
 	_, err := os.Stat(homePath)
-
 	if os.IsNotExist(err) {
-		err := os.Mkdir(homePath, 0755)
-
+		err := os.MkdirAll(homePath, 0755)
 		if err != nil {
 			fmt.Println("Create folder problem:", err)
 			return
 		}
+	} else if err != nil {
+		fmt.Println("Error checking directory:", err)
+		return
 	}
 }
 

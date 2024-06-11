@@ -6,6 +6,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type Command interface {
+	Execute(cmd *cobra.Command, args []string)
+}
+
 var rootCmd = &cobra.Command{
 	Use:   "envolve",
 	Short: "Envolve CLI is a tool for effortless .env file management.",
@@ -22,5 +26,4 @@ func Execute() {
 }
 
 func init() {
-	// Burada bayraklar ve yapılandırma ayarları tanımlanabilir.
 }
