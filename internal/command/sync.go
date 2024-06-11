@@ -19,13 +19,23 @@ func (command *SyncCommand) Execute(cmd *cobra.Command, args []string) {
 	currentEnvFilePath := filepath.Join(currentPath, "/.env")
 	targetEnvFilePath := filepath.Join(targetPath, "/.env")
 
-	if _, err := os.Stat(currentEnvFilePath); err == nil {
+	if _, err := os.Stat(targetEnvFilePath); err == nil {
 		log.Println("Error: .env file already exists in the current directory!")
 		return
 	}
 
-	logic.CreateFolderIfDoesNotExist(targetPath)
-	logic.CopyFile(currentEnvFilePath, targetEnvFilePath)
+	err := logic.CreateFolderIfDoesNotExist(targetPath)
+
+	if err != nil {
+		return
+	}
+
+	copyErr := logic.CopyFile(currentEnvFilePath, targetEnvFilePath)
+
+	if copyErr != nil {
+		return
+	}
+
 	logic.DeleteFile(currentEnvFilePath)
 	logic.Symlink(targetEnvFilePath, currentEnvFilePath)
 

@@ -58,18 +58,20 @@ func GetFoldername(path string) string {
 	return folder
 }
 
-func CreateFolderIfDoesNotExist(homePath string) {
+func CreateFolderIfDoesNotExist(homePath string) error {
 	_, err := os.Stat(homePath)
 	if os.IsNotExist(err) {
-		err := os.MkdirAll(homePath, 0755)
-		if err != nil {
+		er := os.MkdirAll(homePath, 0755)
+		if er != nil {
 			log.Println("Create folder problem:", err)
-			return
+			return err
 		}
 	} else if err != nil {
 		log.Println("Error checking directory:", err)
-		return
+		return err
 	}
+
+	return nil
 }
 
 func Symlink(source string, target string) {
@@ -81,32 +83,34 @@ func Symlink(source string, target string) {
 	}
 }
 
-func CopyFile(sourceFilePath string, targetFilePath string) {
+func CopyFile(sourceFilePath string, targetFilePath string) error {
 	sourceFile, err := os.Open(sourceFilePath)
 	if err != nil {
 		log.Println("Source file problem", err)
-		return
+		return err
 	}
 	defer sourceFile.Close()
 
 	targetFile, err := os.Create(targetFilePath)
 	if err != nil {
 		log.Println("Target file problem", err)
-		return
+		return err
 	}
 	defer targetFile.Close()
 
 	_, err = sourceFile.Seek(0, 0)
 	if err != nil {
 		log.Println("Seek error", err)
-		return
+		return err
 	}
 
 	_, err = io.Copy(targetFile, sourceFile)
 	if err != nil {
 		log.Println("File cannot copied:", err)
-		return
+		return err
 	}
+
+	return nil
 }
 
 func DeleteFile(filePath string) {
