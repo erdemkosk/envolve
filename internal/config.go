@@ -11,7 +11,7 @@ type CommandType int32
 
 const (
 	SYNC CommandType = 0
-	GET  CommandType = 1
+	SHOW CommandType = 1
 )
 
 // colors

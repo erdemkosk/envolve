@@ -8,8 +8,8 @@ func CommandFactory(commandType config.CommandType) ICommand {
 	if commandType == config.SYNC {
 		return &SyncCommand{}
 	}
-	if commandType == config.GET {
-		return &GetCommand{}
+	if commandType == config.SHOW {
+		return &ShowCommand{}
 	}
 
 	return nil
