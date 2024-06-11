@@ -21,6 +21,7 @@ var testCmd = &cobra.Command{
 
 		var mu sync.Mutex
 		var currentFilePath string
+		var modal *tview.Modal
 
 		envolvePath := logic.GetEnvolveHomePath()
 
@@ -30,19 +31,15 @@ var testCmd = &cobra.Command{
 			SetRoot(tview.NewTreeNode(envolvePath).SetColor(config.MAIN_COLOR)).
 			SetCurrentNode(tview.NewTreeNode(envolvePath).SetColor(config.MAIN_COLOR))
 
-		tree.SetBorder(true)
+		tree.SetTitle("Envs").SetBorder(true)
 
-		rightBox := tview.NewTextView().
-			SetTextAlign(tview.AlignLeft).
-			SetScrollable(true).
+		rightBox := tview.NewTextArea().
+			SetPlaceholder("Enter text here...")
+		rightBox.SetTitle("Editor").SetBorder(true)
+
+		help1 := tview.NewTextView().
 			SetDynamicColors(true).
-			SetWrap(true).
-			SetRegions(true).
-			SetChangedFunc(func() {
-				app.Draw()
-			})
-
-		rightBox.SetBorder(true)
+			SetText(`[green]Info(U can use mouse) [yellow]ctrl+N[white]:Move Editor [yellow]ctrl+B[white]:Move Envs [yellow]ctrl+S[white]:Save Changes `)
 
 		addNodes := func(target *tview.TreeNode, path string) {
 			files, err := logic.ReadDir(path, config.EXCLUDED_FILES)
@@ -93,57 +90,65 @@ var testCmd = &cobra.Command{
 				}
 			}
 		})
-
 		flex := tview.NewFlex().
-			AddItem(tree, 0, 1, false).
-			AddItem(rightBox, 0, 2, false)
+			SetDirection(tview.FlexRow).
+			AddItem(tview.NewFlex().
+				SetDirection(tview.FlexColumn).
+				AddItem(tree, 0, 1, false).
+				AddItem(rightBox, 0, 2, false), 0, 3, false).
+			AddItem(help1, 1, 0, false)
 
 		app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+
 			switch event.Key() {
-			case tcell.KeyRight:
+			case tcell.KeyCtrlN:
 				app.SetFocus(rightBox)
-			case tcell.KeyLeft:
+			case tcell.KeyCtrlB:
 				app.SetFocus(tree)
 			case tcell.KeyCtrlS:
-				if currentFilePath != "" {
-					saveFileContent(currentFilePath, rightBox)
+				if modal == nil {
+					modal = tview.NewModal().
+						SetText("Do you want to save changes?").
+						AddButtons([]string{"Yes", "Cancel"}).
+						SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+							if buttonLabel == "Yes" {
+								if currentFilePath != "" {
+									saveFileContent(currentFilePath, rightBox)
+								}
+								app.Stop()
+							}
+
+						})
+
+					flex.AddItem(modal, 1, 0, false)
+					app.SetFocus(modal)
+				} else {
+					app.SetFocus(modal)
 				}
 			}
 			return event
 		})
 
-		if err := app.SetRoot(flex, true).SetFocus(tree).Run(); err != nil {
+		if err := app.SetRoot(flex, true).SetFocus(tree).EnableMouse(true).Run(); err != nil {
 			panic(err)
 		}
 	},
 }
 
-func showFileContent(file string, rightBox *tview.TextView) {
+func showFileContent(file string, rightBox *tview.TextArea) {
 	content, err := os.ReadFile(file)
 	if err != nil {
-		rightBox.SetText("Error reading file: " + err.Error())
+		rightBox.SetText("Error reading file: "+err.Error(), true)
 		return
 	}
 
-	rightBox.SetText(string(content))
-	rightBox.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		switch event.Key() {
-		case tcell.KeyRune:
-			rightBox.Write([]byte(string(event.Rune())))
-		case tcell.KeyBackspace, tcell.KeyBackspace2:
-			text := rightBox.GetText(false)
-			if len(text) > 0 {
-				rightBox.SetText(text[:len(text)-1])
-			}
-		}
-		return event
-	})
+	rightBox.SetText(string(content), true)
 }
 
-func saveFileContent(file string, rightBox *tview.TextView) {
-	text := rightBox.GetText(false)
+func saveFileContent(file string, rightBox *tview.TextArea) {
+	text := rightBox.GetText()
 	if err := os.WriteFile(file, []byte(text), 0644); err != nil {
-		rightBox.SetText("Error saving file: " + err.Error())
+		rightBox.SetText("Error saving file: "+err.Error(), true)
 	}
 }
 
