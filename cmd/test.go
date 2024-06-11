@@ -20,6 +20,7 @@ var testCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var mu sync.Mutex
+		var currentFilePath string
 
 		envolvePath := logic.GetEnvolveHomePath()
 
@@ -31,7 +32,15 @@ var testCmd = &cobra.Command{
 
 		tree.SetBorder(true)
 
-		rightBox := tview.NewTextView().SetTextAlign(tview.AlignLeft).SetScrollable(true)
+		rightBox := tview.NewTextView().
+			SetTextAlign(tview.AlignLeft).
+			SetScrollable(true).
+			SetDynamicColors(true).
+			SetWrap(true).
+			SetRegions(true).
+			SetChangedFunc(func() {
+				app.Draw()
+			})
 
 		rightBox.SetBorder(true)
 
@@ -79,6 +88,7 @@ var testCmd = &cobra.Command{
 						node.Expand()
 					}
 				} else {
+					currentFilePath = selectedPath
 					showFileContent(selectedPath, rightBox)
 				}
 			}
@@ -86,18 +96,25 @@ var testCmd = &cobra.Command{
 
 		flex := tview.NewFlex().
 			AddItem(tree, 0, 1, false).
-			AddItem(rightBox, 0, 1, false)
+			AddItem(rightBox, 0, 2, false)
+
+		app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+			switch event.Key() {
+			case tcell.KeyRight:
+				app.SetFocus(rightBox)
+			case tcell.KeyLeft:
+				app.SetFocus(tree)
+			case tcell.KeyCtrlS:
+				if currentFilePath != "" {
+					saveFileContent(currentFilePath, rightBox)
+				}
+			}
+			return event
+		})
 
 		if err := app.SetRoot(flex, true).SetFocus(tree).Run(); err != nil {
 			panic(err)
 		}
-
-		app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-			if event.Key() == tcell.KeyRight {
-				app.SetFocus(rightBox)
-			}
-			return event
-		})
 	},
 }
 
@@ -109,6 +126,25 @@ func showFileContent(file string, rightBox *tview.TextView) {
 	}
 
 	rightBox.SetText(string(content))
+	rightBox.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		switch event.Key() {
+		case tcell.KeyRune:
+			rightBox.Write([]byte(string(event.Rune())))
+		case tcell.KeyBackspace, tcell.KeyBackspace2:
+			text := rightBox.GetText(false)
+			if len(text) > 0 {
+				rightBox.SetText(text[:len(text)-1])
+			}
+		}
+		return event
+	})
+}
+
+func saveFileContent(file string, rightBox *tview.TextView) {
+	text := rightBox.GetText(false)
+	if err := os.WriteFile(file, []byte(text), 0644); err != nil {
+		rightBox.SetText("Error saving file: " + err.Error())
+	}
 }
 
 func init() {
