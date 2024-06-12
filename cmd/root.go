@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/erdemkosk/envolve-go/internal/logic"
 	"github.com/spf13/cobra"
 )
 
@@ -20,6 +21,13 @@ without the risk of loss.`,
 }
 
 func Execute() {
+	envolvePath := logic.GetEnvolveHomePath()
+
+	err := logic.CreateFolderIfDoesNotExist(envolvePath)
+
+	if err != nil {
+		return
+	}
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}

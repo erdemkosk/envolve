@@ -9,10 +9,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type SyncAllCommand struct{}
+type SyncAllCommand struct {
+	path string
+}
 
 func (command *SyncAllCommand) Execute(cmd *cobra.Command, args []string) {
-	currentPath, _ := logic.GetCurrentPathAndFolder("")
+	currentPath, _ := logic.GetCurrentPathAndFolder(command.path)
 	envolvePath := logic.GetEnvolveHomePath()
 
 	err := filepath.Walk(currentPath, func(path string, info os.FileInfo, err error) error {

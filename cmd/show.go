@@ -12,7 +12,7 @@ var showCmd = &cobra.Command{
 	Long: `Allows editing or inspecting environment variables (.env files) in the specified path.
 Lists all the environment variable files (.env) and directories in the specified path and allows
 navigation into directories. When an environment variable file is selected, u can edit with internal editor.`,
-	Run: command.CommandFactory(config.SHOW).Execute,
+	Run: command.CommandFactory(config.SHOW, "").Execute,
 }
 
 func init() {
