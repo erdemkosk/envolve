@@ -73,6 +73,6 @@ brews:
       #
       # Default: default repository branch
       # Templates: allowed
-      branch: master
+      branch: main
 
     
