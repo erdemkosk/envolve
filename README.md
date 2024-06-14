@@ -1,11 +1,8 @@
 
-![Logo](https://github.com/erdemkosk/envolve/raw/master/logo.png)
+![Logo](https://github.com/erdemkosk/envolve-ts/raw/master/logo.png)
 
 
 # Envolve-Go
-
-
-[Node Js Version](https://github.com/erdemkosk/envolve)
 
 Synchronize environment variables across projects and **manage .env files**.
 Automates the restoration of .env files for all projects, ensures consistency by syncing variables from a global .env file, and **creates symbolic links** to **maintain the latest environment settings**.
@@ -38,6 +35,13 @@ Join us on this journey of innovation and efficiency as we continue to push the 
 
 3. **Visualization**: With Envolve, you can view the content of .env files in an organized tabular format for better clarity.
 
+## Related
+
+Here are some related projects
+
+[Golang Version](https://github.com/erdemkosk/envolve-go)
+
+
 ## Roadmap
 
 - Adding restore env files
@@ -66,3 +70,14 @@ A big thank you to all the contributors who have helped make Envolve better:
     </td>
   </tr>
 </table>
+## Deployment
+
+Release on Brew
+
+```bash
+  export GITHUB_TOKEN=xxxx
+  goreleaser --snapshot  --clean  //it will create new snapshot
+  git tag -a v1.0.0 -m "First release" && git push origin v1.0.0
+  goreleaser release --clean 
+```
+
