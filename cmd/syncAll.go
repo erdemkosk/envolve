@@ -9,8 +9,9 @@ import (
 var syncAllPath string
 
 var syncAllCmd = &cobra.Command{
-	Use:   "sync-all",
-	Short: "Synchronizes all environment variables across projects inside of the folder",
+	Use: "sync-all",
+	Short: `For example, you have a folder called projects. There is an .env file in each of your projects. If you do not want to sync them one by one, you can use sync-all. All your projects are automatically synced.
+	        If you do not want to go to the Projects folder, you can give --path`,
 	Long: `Synchronizes all environment variables across projects.
 Backs up .env files for all projects, restores variables from a global .env file,
 and creates symbolic links to the latest environment settings. You can specify a path to sync files from using the --path flag if not it will use current path.`,

@@ -43,8 +43,8 @@ func (command EditCommand) Execute(cmd *cobra.Command, args []string) {
 			if currentText == "" || len(envFiles) == 0 {
 				return nil
 			}
-			// Get all keys that start with the current text
-			for key := range envFiles[0].EnvVars { // Assuming envFiles is not empty
+
+			for key := range envFiles[0].EnvVars {
 				if strings.HasPrefix(key, currentText) {
 					entries = append(entries, key)
 				}
@@ -121,7 +121,7 @@ func (command EditCommand) Execute(cmd *cobra.Command, args []string) {
 
 			resultBox.SetText("[green]Successfully updated env files")
 		}).
-		AddButton("Update by Value", func() { // Add a new button for updating by value
+		AddButton("Update by Value", func() {
 			value := valueSearchBox.GetText()
 			newValue := valueBox.GetText()
 
@@ -143,8 +143,6 @@ func (command EditCommand) Execute(cmd *cobra.Command, args []string) {
 		AddButton("Quit", func() {
 			app.Stop()
 		})
-
-	// Add empty TextView for spacing
 
 	form.SetTitle("Search").SetBorder(true)
 
