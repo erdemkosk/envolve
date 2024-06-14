@@ -40,7 +40,7 @@ func (command EditCommand) Execute(cmd *cobra.Command, args []string) {
 			updateResults(resultBox, envFiles, text)
 		}).
 		SetAutocompleteFunc(func(currentText string) (entries []string) {
-			if currentText == "" {
+			if currentText == "" || len(envFiles) == 0 {
 				return nil
 			}
 			// Get all keys that start with the current text
@@ -62,10 +62,10 @@ func (command EditCommand) Execute(cmd *cobra.Command, args []string) {
 			updateResultsByValue(resultBox, envFiles, text)
 		}).
 		SetAutocompleteFunc(func(currentText string) (entries []string) {
-			if currentText == "" {
+			if currentText == "" || len(envFiles) == 0 {
 				return nil
 			}
-			// Get all values that start with the current text
+
 			seenValues := make(map[string]bool)
 			for _, envFile := range envFiles {
 				for _, value := range envFile.EnvVars {
@@ -159,6 +159,9 @@ func (command EditCommand) Execute(cmd *cobra.Command, args []string) {
 }
 
 func filterEnvFilesByKey(envFiles []logic.EnvFile, key string) []logic.EnvFile {
+	if len(envFiles) == 0 {
+		return nil
+	}
 	var matchingFiles []logic.EnvFile
 	for _, envFile := range envFiles {
 		if _, exists := envFile.EnvVars[key]; exists {
@@ -169,12 +172,16 @@ func filterEnvFilesByKey(envFiles []logic.EnvFile, key string) []logic.EnvFile {
 }
 
 func filterEnvFilesByValue(envFiles []logic.EnvFile, value string) []logic.EnvFile {
+	if len(envFiles) == 0 {
+		return nil
+	}
+
 	var matchingFiles []logic.EnvFile
 	for _, envFile := range envFiles {
 		for _, envValue := range envFile.EnvVars {
 			if envValue == value {
 				matchingFiles = append(matchingFiles, envFile)
-				break // Eşleşme bulunduğunda döngüden çık
+				break
 			}
 		}
 	}
@@ -183,7 +190,8 @@ func filterEnvFilesByValue(envFiles []logic.EnvFile, value string) []logic.EnvFi
 
 func updateResults(resultBox *tview.TextView, envFiles []logic.EnvFile, searchKey string) {
 	resultBox.Clear()
-	if searchKey == "" {
+	if searchKey == "" || len(envFiles) == 0 {
+		resultBox.SetText("[yellow]No matching keys found")
 		return
 	}
 
@@ -205,7 +213,8 @@ func updateResults(resultBox *tview.TextView, envFiles []logic.EnvFile, searchKe
 
 func updateResultsByValue(resultBox *tview.TextView, envFiles []logic.EnvFile, searchValue string) {
 	resultBox.Clear()
-	if searchValue == "" {
+	if searchValue == "" || len(envFiles) == 0 {
+		resultBox.SetText("[yellow]No matching values found")
 		return
 	}
 
