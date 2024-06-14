@@ -49,12 +49,14 @@ changelog:
       - Merge branch
 
 brews:
-- name: gophersay
-  download_strategy: CurlDownloadStrategy
-  homepage: "https://github.com/erdemkosk/homebrew-envolve"
-  description: "Synchronize environment variables across projects and manage .env files. Automates the restoration of .env files for all projects, ensures consistency by syncing variables from a global .env file, and creates symbolic links to maintain the latest environment settings."
-  commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
-  repository:
+  - name: gophersay
+    download_strategy: CurlDownloadStrategy
+    homepage: "https://github.com/erdemkosk/homebrew-envolve"
+    description: "Synchronize environment variables across projects and manage .env files. Automates the restoration of .env files for all projects, ensures consistency by syncing variables from a global .env file, and creates symbolic links to maintain the latest environment settings."
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    install: |
+      bin.install "gophersay"
+    repository:
       # Repository owner.
       #
       # Templates: allowed
@@ -64,7 +66,6 @@ brews:
       #
       # Templates: allowed
       name: envolve
-
 
       # Optionally a branch can be provided.
       #
