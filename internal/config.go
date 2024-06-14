@@ -13,6 +13,7 @@ const (
 	SYNC    CommandType = 0
 	SYNCALL CommandType = 1
 	SHOW    CommandType = 2
+	EDIT    CommandType = 3
 )
 
 // colors

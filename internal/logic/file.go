@@ -1,10 +1,13 @@
 package logic
 
 import (
+	"bufio"
+	"fmt"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	config "github.com/erdemkosk/envolve-go/internal"
 )
@@ -115,4 +118,108 @@ func DeleteFile(filePath string) {
 	if err := os.Remove(filePath); err != nil {
 		log.Println("Remove problem", err)
 	}
+}
+
+func ReadEnvFile(path string) (map[string]string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	envs := make(map[string]string)
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if len(line) == 0 || strings.HasPrefix(line, "#") {
+			continue
+		}
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) != 2 {
+			continue
+		}
+		key := parts[0]
+		value := parts[1]
+		envs[key] = value
+	}
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+	return envs, nil
+}
+
+type EnvFile struct {
+	Path    string
+	Folder  string
+	EnvVars map[string]string
+}
+
+func CollectEnvFiles(envDir string) ([]EnvFile, error) {
+	var envFiles []EnvFile
+	err := filepath.Walk(envDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".env") {
+			envVars, err := ReadEnvFile(path)
+			if err != nil {
+				return err
+			}
+			envFiles = append(envFiles, EnvFile{
+				Path:    path,
+				Folder:  filepath.Base(filepath.Dir(path)),
+				EnvVars: envVars,
+			})
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return envFiles, nil
+}
+
+func UpdateEnvFiles(envFiles []EnvFile, key, newValue string) error {
+	for i := range envFiles {
+		envFile := &envFiles[i]
+		if _, exists := envFile.EnvVars[key]; exists {
+			envFile.EnvVars[key] = newValue
+			if err := WriteEnvFile(envFile.Path, envFile.EnvVars); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func UpdateEnvFilesWithValue(envFiles []EnvFile, value, newValue string) error {
+	for _, envFile := range envFiles {
+		for key, envValue := range envFile.EnvVars {
+			if envValue == value {
+				envFile.EnvVars[key] = newValue
+				if err := WriteEnvFile(envFile.Path, envFile.EnvVars); err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+func WriteEnvFile(path string, envVars map[string]string) error {
+	file, err := os.OpenFile(path, os.O_RDWR|os.O_TRUNC, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	for key, value := range envVars {
+		_, err := fmt.Fprintf(writer, "%s=%s\n", key, value)
+		if err != nil {
+			return err
+		}
+	}
+	return writer.Flush()
 }
