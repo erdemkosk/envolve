@@ -58,6 +58,7 @@ brews:
     install: |
       bin.install "envolve"
     repository:
+
       # Repository owner.
       #
       # Templates: allowed
@@ -66,10 +67,12 @@ brews:
       # Repository name.
       #
       # Templates: allowed
-      name: envolve
+      name: homebrew-envolve
 
       # Optionally a branch can be provided.
       #
       # Default: default repository branch
       # Templates: allowed
       branch: master
+
+    
