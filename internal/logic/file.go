@@ -2,13 +2,11 @@ package logic
 
 import (
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 
 	config "github.com/erdemkosk/envolve-go/internal"
-	"github.com/rivo/tview"
 )
 
 func getHomePath() string {
@@ -17,10 +15,7 @@ func getHomePath() string {
 }
 
 func GetEnvolveHomePath() string {
-	homePath := getHomePath()
-	envolvePath := filepath.Join(homePath, config.HOME_FOLDER)
-
-	return envolvePath
+	return filepath.Join(getHomePath(), config.HOME_FOLDER)
 }
 
 func contains(names []string, name string) bool {
@@ -33,45 +28,45 @@ func contains(names []string, name string) bool {
 }
 
 func ReadDir(path string, excludeNames []string) ([]os.FileInfo, error) {
-	files, err := ioutil.ReadDir(path)
+	files, err := os.ReadDir(path)
 	if err != nil {
 		return nil, err
 	}
 
-	var filteredFiles []os.FileInfo
+	var filteredFiles []os.DirEntry
 	for _, file := range files {
 		if !contains(excludeNames, file.Name()) {
 			filteredFiles = append(filteredFiles, file)
 		}
 	}
 
-	return filteredFiles, nil
+	var fileInfos []os.FileInfo
+	for _, file := range filteredFiles {
+		info, err := file.Info()
+		if err != nil {
+			return nil, err
+		}
+		fileInfos = append(fileInfos, info)
+	}
+
+	return fileInfos, nil
 }
 
 func GetCurrentPathAndFolder(optionalPath string) (string, string) {
-
-	var path string
-
-	if optionalPath == "" {
+	path := optionalPath
+	if path == "" {
 		path, _ = os.Getwd()
-	} else {
-		path = optionalPath
 	}
-
-	folder := filepath.Base(path)
-	return path, folder
+	return path, filepath.Base(path)
 }
 
 func GetFoldername(path string) string {
-	folder := filepath.Base(filepath.Dir(path))
-	return folder
+	return filepath.Base(filepath.Dir(path))
 }
 
 func CreateFolderIfDoesNotExist(homePath string) error {
-	_, err := os.Stat(homePath)
-	if os.IsNotExist(err) {
-		er := os.MkdirAll(homePath, 0755)
-		if er != nil {
+	if _, err := os.Stat(homePath); os.IsNotExist(err) {
+		if err := os.MkdirAll(homePath, 0755); err != nil {
 			log.Println("Create folder problem:", err)
 			return err
 		}
@@ -79,20 +74,16 @@ func CreateFolderIfDoesNotExist(homePath string) error {
 		log.Println("Error checking directory:", err)
 		return err
 	}
-
 	return nil
 }
 
-func Symlink(source string, target string) {
-	err := os.Symlink(source, target)
-
-	if err != nil {
+func Symlink(source, target string) {
+	if err := os.Symlink(source, target); err != nil {
 		log.Println("There is a problem with symlink:", err)
-		return
 	}
 }
 
-func CopyFile(sourceFilePath string, targetFilePath string) error {
+func CopyFile(sourceFilePath, targetFilePath string) error {
 	sourceFile, err := os.Open(sourceFilePath)
 	if err != nil {
 		log.Println("Source file problem", err)
@@ -107,15 +98,13 @@ func CopyFile(sourceFilePath string, targetFilePath string) error {
 	}
 	defer targetFile.Close()
 
-	_, err = sourceFile.Seek(0, 0)
-	if err != nil {
+	if _, err = sourceFile.Seek(0, 0); err != nil {
 		log.Println("Seek error", err)
 		return err
 	}
 
-	_, err = io.Copy(targetFile, sourceFile)
-	if err != nil {
-		log.Println("File cannot copied:", err)
+	if _, err = io.Copy(targetFile, sourceFile); err != nil {
+		log.Println("File cannot be copied:", err)
 		return err
 	}
 
@@ -123,27 +112,7 @@ func CopyFile(sourceFilePath string, targetFilePath string) error {
 }
 
 func DeleteFile(filePath string) {
-	err := os.Remove(filePath)
-	if err != nil {
+	if err := os.Remove(filePath); err != nil {
 		log.Println("Remove problem", err)
-		return
-	}
-
-}
-
-func ShowFileContent(file string, rightBox *tview.TextArea) {
-	content, err := os.ReadFile(file)
-	if err != nil {
-		rightBox.SetText("Error reading file: "+err.Error(), true)
-		return
-	}
-
-	rightBox.SetText(string(content), true)
-}
-
-func SaveFileContent(file string, rightBox *tview.TextArea) {
-	text := rightBox.GetText()
-	if err := os.WriteFile(file, []byte(text), 0644); err != nil {
-		rightBox.SetText("Error saving file: "+err.Error(), true)
 	}
 }

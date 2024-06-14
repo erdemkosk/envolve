@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	config "github.com/erdemkosk/envolve-go/internal"
+	"github.com/erdemkosk/envolve-go/internal/handler"
 	"github.com/erdemkosk/envolve-go/internal/logic"
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -84,7 +85,7 @@ func (command ShowCommand) Execute(cmd *cobra.Command, args []string) {
 				}
 			} else {
 				currentFilePath = selectedPath
-				logic.ShowFileContent(selectedPath, rightBox)
+				handler.ShowFileContent(selectedPath, rightBox)
 			}
 		}
 	})
@@ -111,7 +112,7 @@ func (command ShowCommand) Execute(cmd *cobra.Command, args []string) {
 					SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 						if buttonLabel == "Yes" {
 							if currentFilePath != "" {
-								logic.SaveFileContent(currentFilePath, rightBox)
+								handler.SaveFileContent(currentFilePath, rightBox)
 							}
 							app.Stop()
 						}
