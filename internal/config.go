@@ -2,7 +2,7 @@ package config
 
 import "github.com/gdamore/tcell/v2"
 
-const HOME_FOLDER = ".envolve-go"
+const HOME_FOLDER = ".envolve"
 const DEFAULT_EDITOR = "nano"
 
 var EXCLUDED_FILES = []string{".DS_Store"}

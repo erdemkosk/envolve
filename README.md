@@ -79,5 +79,6 @@ Release on Brew
   goreleaser --snapshot  --clean  //it will create new snapshot
   git tag -a v1.0.0 -m "First release" && git push origin v1.0.0
   goreleaser release --clean 
+  brew tap erdemkosk/envolve
 ```
 
