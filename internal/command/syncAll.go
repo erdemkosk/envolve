@@ -17,48 +17,52 @@ func (command *SyncAllCommand) Execute(cmd *cobra.Command, args []string) {
 	currentPath, _ := logic.GetCurrentPathAndFolder(command.path)
 	envolvePath := logic.GetEnvolveHomePath()
 
-	err := filepath.Walk(currentPath, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			log.Printf("Error accessing path %q: %v\n", path, err)
-			return err
-		}
+	entries, err := os.ReadDir(currentPath)
+	if err != nil {
+		log.Printf("Error reading directory %q: %v\n", currentPath, err)
+		os.Exit(1)
+	}
 
-		if info.IsDir() && path != currentPath { // Check if it's a directory (excluding current directory)
-			log.Printf("Syncing .env file in directory: %s\n", path)
+	for _, entry := range entries {
+		if entry.IsDir() {
+			subDirPath := filepath.Join(currentPath, entry.Name())
+			envFilePath := filepath.Join(subDirPath, ".env")
 
-			currentPath, currentFolderName := logic.GetCurrentPathAndFolder(path)
+			// Check if .env file exists in the subdirectory
+			if _, err := os.Stat(envFilePath); os.IsNotExist(err) {
+				log.Printf(".env file does not exist in directory: %s, skipping...\n", subDirPath)
+				continue
+			}
+
+			log.Printf("Syncing .env file in directory: %s\n", subDirPath)
+
+			_, currentFolderName := logic.GetCurrentPathAndFolder(subDirPath)
 			targetPath := filepath.Join(envolvePath, currentFolderName)
-			currentEnvFilePath := filepath.Join(currentPath, "/.env")
-			targetEnvFilePath := filepath.Join(targetPath, "/.env")
+			targetEnvFilePath := filepath.Join(targetPath, ".env")
 
 			if _, err := os.Stat(targetEnvFilePath); err == nil {
-				log.Println("Error: .env file already exists in the current directory!")
-				return nil
+				log.Println("Error: .env file already exists in the target directory!")
+				continue
 			}
 
 			err := logic.CreateFolderIfDoesNotExist(targetPath)
-
 			if err != nil {
-				return nil
+				log.Printf("Error creating target directory: %v\n", err)
+				continue
 			}
 
-			copyErr := logic.CopyFile(currentEnvFilePath, targetEnvFilePath)
-
+			copyErr := logic.CopyFile(envFilePath, targetEnvFilePath)
 			if copyErr != nil {
-				return nil
+				log.Printf("Error copying .env file: %v\n", copyErr)
+				continue
 			}
 
-			logic.DeleteFile(currentEnvFilePath)
-			logic.Symlink(targetEnvFilePath, currentEnvFilePath)
+			logic.DeleteFile(envFilePath)
 
-			log.Printf("Sync completed successfully for directory: %s\n", path)
+			logic.Symlink(targetEnvFilePath, envFilePath)
+
+			log.Printf("Sync completed successfully for directory: %s\n", subDirPath)
 		}
-
-		return nil
-	})
-
-	if err != nil {
-		log.Printf("Error walking through directory: %v\n", err)
 	}
 
 	os.Exit(0)
