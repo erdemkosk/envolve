@@ -17,7 +17,7 @@ func CommandFactory(commandType config.CommandType, path string) ICommand {
 	if commandType == config.EDIT {
 		return &EditCommand{}
 	}
-	if commandType == config.SYNCALL {
+	if commandType == config.UNSYNC {
 		return &UnsyncCommand{}
 	}
 
