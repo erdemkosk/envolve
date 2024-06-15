@@ -50,7 +50,7 @@ brew install envolve
 ```
 
 ## Commands
-### Welcome to he Envolve!
+### Welcome to the Envolve!
 ![EnvolveRoot](images/envolve-root.gif)
 
 ### Sync and Show
