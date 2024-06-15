@@ -39,7 +39,7 @@ Join us on this journey of innovation and efficiency as we continue to push the 
 
 Here are some related projects
 
-[Golang Version](https://github.com/erdemkosk/envolve-go)
+[Node Version](https://github.com/erdemkosk/envolve-ts)
 
 ## How to Install
 
