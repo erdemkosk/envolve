@@ -14,6 +14,7 @@ const (
 	SYNCALL CommandType = 1
 	SHOW    CommandType = 2
 	EDIT    CommandType = 3
+	UNSYNC  CommandType = 4
 )
 
 // colors
@@ -34,5 +35,5 @@ const (
 	PASTEL_WHITE   = "\033[97m"
 	PASTEL_GRAY    = "\033[37m"
 	PASTEL_PURPLE  = "\033[35m"
-	PASTEL_ORANGE  = "\033[38;5;214m" // Bir pastel turuncu tonu ekledim
+	PASTEL_ORANGE  = "\033[38;5;214m"
 )
