@@ -45,6 +45,7 @@ Here are some related projects
 
 ```bash
 brew update
+brew tap erdemkosk/envolve
 brew install envolve
 ```
 
