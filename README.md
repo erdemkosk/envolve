@@ -41,12 +41,50 @@ Here are some related projects
 
 [Golang Version](https://github.com/erdemkosk/envolve-go)
 
+## How to Install
+
+```bash
+brew update
+brew install envolve
+```
+
+## Commands
+### Welcome to he Envolve!
+![EnvolveRoot](images/envolve-root.gif)
+
+### Sync and Show
+For example, you have an application called x-service. And you have an .env file inside this application, in this case, run the envolve sync command in that project.
+	        If you want, you can give the path and run it without being in that folder.With this, your .env file is copied to the .envolve folder and given as a symlink to the file you
+	        are working on. This way, if you delete your project, your file will not be lost
+
+![EnvolveSync](images/envolve-sync.gif)
+
+### SyncAll and Show
+For example, you have a folder called projects. There is an .env file in each of your projects. If you do not want to sync them one by one, you can use sync-all. All your projects are automatically synced.
+	        If you do not want to go to the Projects folder, you can give --path
+![EnvolveSync](images/envolve-sync-all.gif)
+
+### Edit
+Edit environment variables across projects. Using this, you can find all env files according to key and value and change them automatically with a single action.
+
+![EnvolveSync](images/envolve-edit.gif)
+
 
 ## Roadmap
 
 - Adding restore env files
 
 - Adding drive upload function with enc
+
+## Release on Brew
+
+```bash
+  export GITHUB_TOKEN=xxxx
+  goreleaser --snapshot  --clean  //it will create new snapshot
+  git tag -a v1.0.0 -m "First release" && git push origin v1.0.0
+  goreleaser release --clean 
+  brew tap erdemkosk/envolve
+```
 
 ## Contributors
 
@@ -70,15 +108,5 @@ A big thank you to all the contributors who have helped make Envolve better:
     </td>
   </tr>
 </table>
-## Deployment
 
-Release on Brew
-
-```bash
-  export GITHUB_TOKEN=xxxx
-  goreleaser --snapshot  --clean  //it will create new snapshot
-  git tag -a v1.0.0 -m "First release" && git push origin v1.0.0
-  goreleaser release --clean 
-  brew tap erdemkosk/envolve
-```
 
