@@ -15,7 +15,7 @@ type Command interface {
 
 var rootCmd = &cobra.Command{
 	Use:     "envolve",
-	Version: "1.0.12",
+	Version: "1.0.13",
 	Short:   "Envolve CLI is a tool for effortless .env file management.",
 	Long: `` + config.PASTEL_ORANGE + `Envolve ` + config.RESET + `is your solution for effortless .env file management. With ` + config.PASTEL_ORANGE + `Envolve ` + config.RESET + `,you can seamlessly gather, arrange, and fine-tune environment variables
 	across all your projects, ensuring that your configuration data is always at your fingertips without the risk of loss. `,
