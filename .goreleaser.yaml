@@ -101,6 +101,8 @@ winget:
     # Required
     license: "mit"
 
+    package_identifier: erdemkosk.envolve
+
     # Publisher URL.
     #
     # Templates: allowed.
