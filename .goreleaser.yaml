@@ -75,4 +75,95 @@ brews:
       # Templates: allowed
       branch: main
 
-    
+# .goreleaser.yaml
+winget:
+  - # Name of the recipe
+    #
+    # Default: the project name.
+    # Templates: allowed.
+    name: envolve
+
+    # Publisher name.
+    #
+    # Templates: allowed.
+    # Required
+    publisher: Erdem Kosk
+
+    # Your app's description.
+    #
+    # Templates: allowed.
+    # Required
+    short_description: "Synchronize environment variables across projects and manage .env files. Automates the restoration of .env files for all projects, ensures consistency by syncing variables from a global .env file, and creates symbolic links to maintain the latest environment settings."
+
+    # License name.
+    #
+    # Templates: allowed.
+    # Required
+    license: "mit"
+
+    # Publisher URL.
+    #
+    # Templates: allowed.
+    publisher_url: https://erdemkosk.github.io/envolve-app/
+
+    # Publisher support URL.
+    #
+    # Templates: allowed.
+    publisher_support_url: "https://github.com/user/repo/issues/new"
+
+    # GOAMD64 to specify which amd64 version to use if there are multiple
+    # versions from the build section.
+    #
+    # Default: 'v1'.
+    goamd64: v1
+
+    # URL which is determined by the given Token (github, gitlab or gitea).
+    #
+    # Default depends on the client.
+    # Templates: allowed.
+    url_template: "https://github.mycompany.com/foo/bar/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+
+
+    # Your app's homepage.
+    homepage: "https://erdemkosk.github.io/envolve-app/"
+
+    # Your app's long description.
+    #
+    # Templates: allowed.
+    description: "Synchronize environment variables across projects and manage .env files. Automates the restoration of .env files for all projects, ensures consistency by syncing variables from a global .env file, and creates symbolic links to maintain the latest environment settings."
+
+    # License URL.
+    #
+    # Templates: allowed.
+    license_url: "https://github.com/erdemkosk/envolve/blob/main/LICENSE"
+
+    # Copyright.
+    #
+    # Templates: allowed.
+    copyright: "Erdem Köşk"
+
+
+    # Tags.
+    tags:
+      - golang
+      - cli
+      - env
+
+
+    # Repository to push the generated files to.
+    repository:
+      # Repository owner.
+      #
+      # Templates: allowed.
+      owner: erdemkosk
+
+      # Repository name.
+      #
+      # Templates: allowed.
+      name: winget-envolve
+
+      # Optionally a branch can be provided.
+      #
+      # Default: default repository branch.
+      # Templates: allowed.
+      branch: main
