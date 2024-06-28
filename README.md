@@ -41,12 +41,19 @@ Here are some related projects
 
 [Node Version](https://github.com/erdemkosk/envolve-ts)
 
-## How to Install
+## How to Install on homebrew (Macos | Linux)
 
 ```bash
 brew update
 brew tap erdemkosk/envolve
 brew install envolve
+```
+
+## How to Install on winget (Windows)
+
+```bash
+winget source update
+winget install envolve
 ```
 
 ## Commands
@@ -77,7 +84,7 @@ Edit environment variables across projects. Using this, you can find all env fil
 
 - Adding drive upload function with enc
 
-## Release on Brew
+## Release on Brew 
 
 ```bash
   export GITHUB_TOKEN=xxxx
