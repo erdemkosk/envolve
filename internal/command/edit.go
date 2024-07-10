@@ -120,6 +120,10 @@ func (command EditCommand) Execute(cmd *cobra.Command, args []string) {
 			}
 
 			resultBox.SetText("[green]Successfully updated env files")
+
+			searchBox.SetText("")
+			valueSearchBox.SetText("")
+			valueBox.SetText("")
 		}).
 		AddButton("Update by Value", func() {
 			value := valueSearchBox.GetText()

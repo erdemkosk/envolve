@@ -18,7 +18,7 @@ type Command interface {
 
 var rootCmd = &cobra.Command{
 	Use:     "envolve",
-	Version: "1.0.16",
+	Version: "1.0.17",
 	Short:   "Envolve CLI is a tool for effortless .env file management.",
 	Long: fmt.Sprintf(`%sEnvolve%s is your solution for effortless .env file management. With %sEnvolve%s, you can seamlessly gather, arrange, and fine-tune environment variables
 	across all your projects, ensuring that your configuration data is always at your fingertips without the risk of loss. `,
