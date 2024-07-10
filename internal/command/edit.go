@@ -86,7 +86,7 @@ func (command EditCommand) Execute(cmd *cobra.Command, args []string) {
 		AddFormItem(searchBox).
 		AddFormItem(valueSearchBox).
 		AddFormItem(valueBox).
-		AddButton("UpdatebBy Key", func() {
+		AddButton("Update By Key", func() {
 			// This is the action when the "Update" button is pressed
 			key := searchBox.GetText()
 			value := valueSearchBox.GetText()
